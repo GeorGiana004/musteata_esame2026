@@ -6,7 +6,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
    public GameObject fireballPrefab; 
     public float spawnRate = 1.0f;    
     public float areaWidth = 10f; 
-
+    
     // Salviamo la posizione iniziale per oscillare attorno ad essa
     private Vector3 posizioneIniziale;
 
@@ -33,5 +33,4 @@ public class NewMonoBehaviourScript : MonoBehaviour
     
 }
 
-   
-
+      

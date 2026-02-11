@@ -15,25 +15,31 @@ public class GreenFireballlogic : MonoBehaviour
         
     }
    void OnTriggerEnter(Collider other)
-    {
-   if (other.CompareTag("Enemy"))
-    {
-        Debug.Log("<color=lime>MAGO HA COLPITO IL DRAGO!</color>"); // Messaggio verde in console
+{
+    // Ignora il giocatore e gli effetti visivi
+    if (other.CompareTag("Player") || other.name.Contains("VFX")) return;
 
-        DragonHealth health = other.GetComponent<DragonHealth>();
+    Debug.Log("Ho toccato: " + other.gameObject.name);
+
+    if (other.CompareTag("Enemy"))
+    {
+        // Cerca lo script DragonHealth nell'oggetto colpito O nei suoi genitori
+        DragonHealth health = other.GetComponentInParent<DragonHealth>();
+
         if (health != null)
         {
-            health.TakeDamage(1); // Toglie vita e attiva l'animazione GetHit
+            health.TakeDamage(1);
+            Debug.Log("<color=green>COLPITO! Vita drago diminuita.</color>");
         }
-        Destroy(gameObject); // La palla verde sparisce
-        }
-        Debug.Log("Ho toccato un oggetto che si chiama: " + other.gameObject.name);
-
-        if (other.CompareTag("Enemy"))
-        {
-            Debug.Log("<color=lime>MAGO HA COLPITO IL DRAGO!</color>");
-        }
+        
+        Destroy(gameObject); // Distruggi la palla dopo il colpo
     }
+
+    
+    // Opzionale: distruggi se tocca l'ambiente (es. pavimento)
+    if (other.CompareTag("Player") || other.name.Contains("VFX")) 
+    {
+     return; // Non fare nulla se colpisci il player o un effetto
+    }
+  }
 }
-
-
