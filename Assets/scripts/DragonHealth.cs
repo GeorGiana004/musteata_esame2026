@@ -1,15 +1,23 @@
 using UnityEngine;
 
+
 public class DragonHealth : MonoBehaviour
 {
     public int health = 5;
     public Animator anim; 
     private bool isDead = false;
+    private Slider healthBar;
+
+   
 
     void Start()
     {
-        
-       
+        // Imposta la barra al massimo all'inizio                    
+        if (HealthBar != null)
+        {
+            HealthBar.maxValue = health;
+            HealthBar.value = health;
+        }
     }
 
     public void TakeDamage(int damage)
@@ -30,6 +38,10 @@ public class DragonHealth : MonoBehaviour
                 anim.SetTrigger("GetHit");
                 Debug.Log("Trigger GetHit inviato correttamente");
             }
+            if (HealthBar != null)
+        {
+            HealthBar.value = health;
+        }
         }
     }
 
@@ -39,11 +51,6 @@ public class DragonHealth : MonoBehaviour
         Debug.Log("ESEGUO TRIGGER MORTE");
 
         if (anim != null) anim.SetTrigger("Die"); 
-
-        // Disabilita tutti i collider
-        Collider[] allColliders = GetComponentsInChildren<Collider>();
-        foreach (Collider c in allColliders) c.enabled = false;
-
         Debug.Log("Il drago è morto.");
     }
 }
