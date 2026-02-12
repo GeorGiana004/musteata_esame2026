@@ -2,44 +2,48 @@ using UnityEngine;
 
 public class DragonHealth : MonoBehaviour
 {
- public int health = 5; // Muore al quinto colpo
-    private Animator anim;
+    public int health = 5;
+    public Animator anim; 
     private bool isDead = false;
 
     void Start()
     {
-        anim = GetComponent<Animator>();
+        
+       
     }
 
     public void TakeDamage(int damage)
-        {
-            if (isDead) return;
-            health -= damage;
-
-        // controllo  se il Renderer esiste prima di usarlo -- feedbak visivo 
+    {
+        if (isDead) return;
+        health -= damage;
         
-        Renderer rend = GetComponentInChildren<Renderer>();
-        if (rend != null) 
-        {
-            rend.material.color = Color.red;
-            Invoke("ResetColor", 0.1f);
-        }
+        Debug.Log("Colpito! Vita attuale: " + health);
 
-        if (health <= 0) Die();
-        else anim.SetTrigger("GetHit");
+        if (anim != null)
+        {
+            if (health <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                anim.SetTrigger("GetHit");
+                Debug.Log("Trigger GetHit inviato correttamente");
+            }
         }
+    }
 
     void Die()
     {
         isDead = true;
-        anim.SetTrigger("Die"); 
-        // Disabilita il collider così le palle di fuoco gli passano attraverso
-        if (GetComponent<Collider>() != null)
-            GetComponent<Collider>().enabled = false;
-            
-        Debug.Log("Il drago è stato sconfitto!");
-    }
-    void ResetColor() {
-    GetComponentInChildren<Renderer>().material.color = Color.white;
+        Debug.Log("ESEGUO TRIGGER MORTE");
+
+        if (anim != null) anim.SetTrigger("Die"); 
+
+        // Disabilita tutti i collider
+        Collider[] allColliders = GetComponentsInChildren<Collider>();
+        foreach (Collider c in allColliders) c.enabled = false;
+
+        Debug.Log("Il drago è morto.");
     }
 }

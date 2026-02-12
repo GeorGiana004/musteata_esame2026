@@ -16,6 +16,16 @@ public class GreenFireballlogic : MonoBehaviour
     }
    void OnTriggerEnter(Collider other)
 {
+   // Cerca lo script DragonHealth nell'oggetto colpito o in tutti i suoi "genitori"
+    DragonHealth healthScript = other.GetComponentInParent<DragonHealth>();
+
+    if (healthScript != null)
+    {
+        healthScript.TakeDamage(1);
+        Debug.Log("Danno inflitto al Drago!");
+        Destroy(gameObject); // Distruggi la palla dopo il colpo
+    }
+   
     // Ignora il giocatore e gli effetti visivi
     if (other.CompareTag("Player") || other.name.Contains("VFX")) return;
 
