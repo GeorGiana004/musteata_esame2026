@@ -1,12 +1,23 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class PlayerHelt : MonoBehaviour
 {
     public int health = 5; 
     private bool isDead = false;
     public Slider healthBar;
+    public GameObject gameOverScreen;
 
     
+    void Start()
+{
+    if (healthBar != null)
+    {
+        healthBar.maxValue = health; // Imposta il massimo dello slider a 5
+        healthBar.value = health;    // Riempie la barra al massimo
+    }
+}
     public void TakeDamage(int damage)
     {
         if (isDead) return;
@@ -28,6 +39,12 @@ public class PlayerHelt : MonoBehaviour
     {
         isDead = true;
         Debug.Log("Il Mago è morto!");
+        if (gameOverScreen != null)
+        {
+            gameOverScreen.SetActive(true); // Mostra la scritta Game Over
+        }
+        Time.timeScale = 0f; // Blocca tutto il gioco
+    
     
     }
 
@@ -37,7 +54,9 @@ public class PlayerHelt : MonoBehaviour
                if (other.CompareTag("EnemyProjectile")) 
         {
             TakeDamage(1);
-            Destroy(other.gameObject); // Distruggi il proiettile nemico
+            Destroy(other.gameObject); 
+
+           
         }
     }
 }

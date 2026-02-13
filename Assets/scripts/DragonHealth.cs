@@ -1,13 +1,13 @@
 using UnityEngine;
-
+using UnityEngine.UI;
 
 public class DragonHealth : MonoBehaviour
 {
     public int health = 5;
     public Animator anim; 
     private bool isDead = false;
-    private Slider healthBar;
-
+    public Slider HealthBar;
+ 
    
 
     void Start()
