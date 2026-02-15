@@ -60,7 +60,11 @@ public class PlayerHelt : MonoBehaviour
            
         }
     }
-    private void CoinAdd
+    public void CoinAdd()
+    {
+        coin ++; 
+        Debug.Log("monete raccolta "+ coin); 
+    }
 
 
 

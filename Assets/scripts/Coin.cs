@@ -11,15 +11,21 @@ public class Coin : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        transform.Rotate(Vector3.right * 100 * Time.deltaTime);
     }
     void OnTriggerEnter(Collider other) 
     {
-        if (other.CompareTag("Player")) 
+       if (other.CompareTag("Player")) 
+    {
+        PlayerHelt player = other.GetComponent<PlayerHelt>();
+        
+        if (player != null)
         {
-            // Cerca lo script del mago e aggiungi un punto
-            other.GetComponent<PlayerHelt>().AggiungiMoneta();
-            Destroy(gameObject); // La moneta sparisce
+            player.CoinAdd();
         }
+
+        Debug.Log("Moneta raccolta!");
+        Destroy(gameObject); 
+    }
     }
 }
