@@ -70,12 +70,12 @@ public class DragonHealth : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter(Collider other)
+  /*  private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("EnemyProjectile")) 
         {
             TakeDamage(1);
             Destroy(other.gameObject); 
         }
-    }
+    }*/
 }
