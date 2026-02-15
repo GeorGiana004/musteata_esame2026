@@ -3,7 +3,7 @@ using UnityEngine;
 public class CoinSpawner : MonoBehaviour
 {
     public GameObject coinPrefab; 
-   private float spawnPosZ = 2f;  
+   private float spawnPosZ = 20f;  
 
     void Start()
     {
@@ -11,13 +11,13 @@ public class CoinSpawner : MonoBehaviour
     }
 
     void SpawnRandomCoin()
-{
-    // Spawna tra 2 e 10 metri davanti allo spawner
-    float randomZ = Random.Range(2f, 10f); 
-    
+    {
+        // Spawna tra 2 e 10 metri davanti allo spawner
+        float randomZ = Random.Range(2f, 10f); 
+        
 
-    Vector3 spawnPos = new Vector3(0, 0.5f, transform.position.z + randomZ); 
-    
-    Instantiate(coinPrefab, spawnPos, coinPrefab.transform.rotation);
-}
-}
+        Vector3 spawnPos = new Vector3(0, 0.5f, transform.position.z + randomZ); 
+        
+        Instantiate(coinPrefab, spawnPos, coinPrefab.transform.rotation);
+    }
+} 

@@ -9,10 +9,13 @@ public class PlayerHelt : MonoBehaviour
     public Slider healthBar;
     public GameObject gameOverScreen;
     public int coin=0;
+    public TextMeshProUGUI coinTextUI;
 
     
     void Start()
 {
+    AggiornaTesto();
+
     if (healthBar != null)
     {
         healthBar.maxValue = health; // Imposta il massimo dello slider a 5
@@ -64,6 +67,14 @@ public class PlayerHelt : MonoBehaviour
     {
         coin ++; 
         Debug.Log("monete raccolta "+ coin); 
+        AggiornaTesto();
+    }
+    void AggiornaTesto()
+    {
+        if (coinTextUI != null)
+        {
+            coinTextUI.text = "COIN: " + coin; // Cambia la scritta a schermo
+        }
     }
 
 

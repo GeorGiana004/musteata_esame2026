@@ -15,17 +15,17 @@ public class Coin : MonoBehaviour
     }
     void OnTriggerEnter(Collider other) 
     {
-       if (other.CompareTag("Player")) 
-    {
-        PlayerHelt player = other.GetComponent<PlayerHelt>();
-        
-        if (player != null)
+        if (other.CompareTag("Player")) 
         {
-            player.CoinAdd();
-        }
+            PlayerHelt player = other.GetComponent<PlayerHelt>();
+            
+            if (player != null)
+            {
+                player.CoinAdd();
+            }
 
-        Debug.Log("Moneta raccolta!");
-        Destroy(gameObject); 
-    }
+            Debug.Log("Moneta raccolta!");
+            Destroy(gameObject); 
+        }
     }
 }
