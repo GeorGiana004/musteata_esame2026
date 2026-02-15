@@ -6,51 +6,76 @@ public class DragonHealth : MonoBehaviour
     public int health = 5;
     public Animator anim; 
     private bool isDead = false;
-    public Slider HealthBar;
- 
-   
+    public Slider healthBar;
+    public GameObject WinScreen;
 
     void Start()
     {
-        // Imposta la barra al massimo all'inizio                    
-        if (HealthBar != null)
+        if (healthBar != null)
         {
-            HealthBar.maxValue = health;
-            HealthBar.value = health;
+            healthBar.maxValue = health;
+            healthBar.value = health;
+        }
+
+        // Assicurati che la schermata Win sia spenta all'inizio
+        if (WinScreen != null)
+        {
+            WinScreen.SetActive(false);
         }
     }
 
     public void TakeDamage(int damage)
     {
         if (isDead) return;
-        health -= damage;
+        anim.SetTrigger("Die");
         
+    if (WinScreen != null) WinScreen.SetActive(true);
+        health -= damage;
         Debug.Log("Colpito! Vita attuale: " + health);
 
-        if (anim != null)
+        if (healthBar != null)
         {
-            if (health <= 0)
-            {
-                Die();
-            }
-            else
-            {
-                anim.SetTrigger("GetHit");
-                Debug.Log("Trigger GetHit inviato correttamente");
-            }
-            if (HealthBar != null)
-        {
-            HealthBar.value = health;
+            healthBar.value = health;
         }
+
+        if (health <= 0)
+        {
+            Die();
+        }
+        else if (anim != null)
+        {
+            anim.SetTrigger("GetHit");
+            Debug.Log("Trigger GetHit inviato correttamente");
         }
     }
 
     void Die()
     {
+        if (isDead) return; 
         isDead = true;
-        Debug.Log("ESEGUO TRIGGER MORTE");
 
-        if (anim != null) anim.SetTrigger("Die"); 
         Debug.Log("Il drago è morto.");
+
+        if (anim != null) 
+        {
+            anim.SetTrigger("Die");
+        }
+
+        
+        if (WinScreen != null)
+        {
+            WinScreen.SetActive(true);
+        }
+
+    }
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("EnemyProjectile")) 
+        {
+            TakeDamage(1);
+            Destroy(other.gameObject); 
+        }
     }
 }
