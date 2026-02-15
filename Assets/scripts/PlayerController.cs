@@ -53,5 +53,5 @@ public class PlayerController : MonoBehaviour
             Instantiate(projectilePrefab, shooting_point.position, transform.rotation);
         }
     }
-    public void Hit() { }
+    
 }

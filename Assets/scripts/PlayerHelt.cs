@@ -8,6 +8,7 @@ public class PlayerHelt : MonoBehaviour
     private bool isDead = false;
     public Slider healthBar;
     public GameObject gameOverScreen;
+    public int coin=0;
 
     
     void Start()
@@ -59,4 +60,10 @@ public class PlayerHelt : MonoBehaviour
            
         }
     }
+    private void CoinAdd
+
+
+
+
+
 }
