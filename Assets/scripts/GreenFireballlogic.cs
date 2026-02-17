@@ -6,22 +6,17 @@ public class GreenFireballlogic : MonoBehaviour
     void Start()
 
     {
-
         GetComponent<Rigidbody>().WakeUp();
 
         Debug.Log("Palla verde creata e pronta a colpire!");
 
     }
 
-
-
     // Update is called once per frame
 
     void Update()
 
-    {
-
-       
+    {  
 
     }
 

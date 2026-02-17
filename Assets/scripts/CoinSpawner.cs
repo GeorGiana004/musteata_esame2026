@@ -3,7 +3,7 @@ using UnityEngine;
 public class CoinSpawner : MonoBehaviour
 {
     public GameObject coinPrefab; 
-   private float spawnPosZ = 20f;  
+    private float spawnPosZ = 20f;  
 
     void Start()
     {

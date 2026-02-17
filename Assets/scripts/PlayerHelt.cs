@@ -76,9 +76,11 @@ public class PlayerHelt : MonoBehaviour
             coinTextUI.text = "COIN: " + coin; // Cambia la scritta a schermo
         }
     }
+    
+ }
+      
+   
 
 
 
 
-
-}
