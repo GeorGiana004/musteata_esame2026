@@ -7,7 +7,15 @@ public class DragonHealth : MonoBehaviour
     public Animator anim; 
     private bool isDead = false;
     public Slider healthBar;
+    
+    // Scritta iniziale WIN
     public GameObject WinScreen;
+    
+    // NUOVA VARIABILE: Pannello con l'InputField e il tasto Post Score
+    public GameObject inputScorePanel;
+
+    private float combatTimer = 0f;
+    private bool timerIsRunning = false;
 
     void Start()
     {
@@ -17,9 +25,19 @@ public class DragonHealth : MonoBehaviour
             healthBar.value = health;
         }
 
-        if (WinScreen != null)
+        // Assicuriamoci che all'inizio siano tutti e due spenti
+        if (WinScreen != null) WinScreen.SetActive(false);
+        if (inputScorePanel != null) inputScorePanel.SetActive(false);
+
+        timerIsRunning = true;
+        combatTimer = 0f;
+    }
+
+    void Update()
+    {
+        if (timerIsRunning)
         {
-            WinScreen.SetActive(false);
+            combatTimer += Time.deltaTime;
         }
     }
 
@@ -28,12 +46,7 @@ public class DragonHealth : MonoBehaviour
         if (isDead) return;
 
         health -= damage; 
-        Debug.Log("Colpito! Vita attuale: " + health);
-
-        if (healthBar != null)
-        {
-            healthBar.value = health;
-        }
+        if (healthBar != null) healthBar.value = health;
 
         if (health <= 0)
         {
@@ -46,32 +59,42 @@ public class DragonHealth : MonoBehaviour
         if (isDead) return; 
         isDead = true;
 
-        Debug.Log("Il drago è morto.");
+        timerIsRunning = false;
+        Debug.Log("Il drago è morto in " + combatTimer.ToString("F2") + " secondi!");
 
-     
-        if (anim != null) 
-        {
-            anim.SetTrigger("Die");
-        }
-         Invoke("MostraVittoria", 3f);
+        if (anim != null) anim.SetTrigger("Die");
 
-      /*  if (WinScreen != null)
-        {
-            WinScreen.SetActive(true); 
-            Debug.Log("win screen attivato " + health);
-        }
-       
-
-        Time.timeScale = 0f; // Ferma il gioco*/
+        // Dopo 3 secondi fa apparire la scritta WIN
+        Invoke("MostraVittoria", 3f);
     }
+
     void MostraVittoria()
     {
-       if (WinScreen != null) 
-        {
+        // Step 1: Appare la scritta WIN
+        if (WinScreen != null) 
+        { 
             WinScreen.SetActive(true); 
-            Debug.Log("Schermata Vittoria attivata ora!");
         }
 
+        // Salvo il tempo
+        PlayerPrefs.SetFloat("LastPlayerScore", combatTimer);
+        PlayerPrefs.Save();
+
+        // Step 2: Aspetto 2 secondi e richiamo la comparsa del pannello per il nome
+        Invoke("MostraInserimentoNome", 2f);
+    }
+
+    void MostraInserimentoNome()
+    {
+        // Step 3: Ora ACCENDO il pannello del Post Score!
+        if (inputScorePanel != null)
+        {
+            inputScorePanel.SetActive(true);
+        }
+
+        Debug.Log("Pannello Post Score attivato!");
+
+        // Blocco il gioco per far scrivere il nome in tranquillità
         Time.timeScale = 0f; 
     }
 }

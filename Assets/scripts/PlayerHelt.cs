@@ -8,26 +8,34 @@ public class PlayerHelt : MonoBehaviour
     private bool isDead = false;
     public Slider healthBar;
     public GameObject gameOverScreen;
-    public int coin=0;
+    public int coin = 0;
     public TextMeshProUGUI coinTextUI;
+    public Animator anim; // Variabile per l'animazione del mago
 
-    
     void Start()
-{
-    AggiornaTesto();
-
-    if (healthBar != null)
     {
-        healthBar.maxValue = health; // Imposta il massimo dello slider a 5
-        healthBar.value = health;    // Riempie la barra al massimo
+        AggiornaTesto();
+
+        if (healthBar != null)
+        {
+            healthBar.maxValue = health; // Imposta il massimo dello slider a 5
+            healthBar.value = health;    // Riempie la barra al massimo
+        }
+
+        // All'inizio spengo la schermata di game over
+        if (gameOverScreen != null)
+        {
+            gameOverScreen.SetActive(false);
+        }
     }
-}
+
     public void TakeDamage(int damage)
     {
         if (isDead) return;
 
         health -= damage;
         Debug.Log("Mago colpito! Vita rimanente: " + health);
+        
         if (healthBar != null)
         {
             healthBar.value = health;
@@ -39,36 +47,54 @@ public class PlayerHelt : MonoBehaviour
         }
     }
 
+    // Unica funzione Die corretta e ripulita
     void Die()
     {
+        if (isDead) return; 
         isDead = true;
-        Debug.Log("Il Mago è morto!");
-        if (gameOverScreen != null)
+
+        Debug.Log("Il player è morto!");
+
+        // Faccio partire l'animazione di morte del mago
+        if (anim != null) 
         {
-            gameOverScreen.SetActive(true); // Mostra la scritta Game Over
+            anim.SetTrigger("Die");
         }
-        Time.timeScale = 0f; // Blocca tutto il gioco
-    
-    
+
+        // 1. Attivo subito la schermata di Game Over
+        if (gameOverScreen != null) 
+        { 
+            gameOverScreen.SetActive(true); 
+        }
+
+        // 2. Aspetto 2 secondi prima di bloccare completamente il gioco
+        Invoke("MostraFineGiocoPlayer", 2f);
+    }
+
+    void MostraFineGiocoPlayer()
+    {
+        Debug.Log("Sequenza di Game Over completata.");
+        
+        // Blocco il gioco definitivamente
+        Time.timeScale = 0f; 
     }
 
     private void OnTriggerEnter(Collider other)
     {
-       
-               if (other.CompareTag("EnemyProjectile")) 
+        if (other.CompareTag("EnemyProjectile")) 
         {
             TakeDamage(1);
             Destroy(other.gameObject); 
-
-           
         }
     }
+
     public void CoinAdd()
     {
-        coin ++; 
-        Debug.Log("monete raccolta "+ coin); 
+        coin++; 
+        Debug.Log("Monete raccolta: " + coin); 
         AggiornaTesto();
     }
+
     void AggiornaTesto()
     {
         if (coinTextUI != null)
@@ -76,11 +102,4 @@ public class PlayerHelt : MonoBehaviour
             coinTextUI.text = "COIN: " + coin; // Cambia la scritta a schermo
         }
     }
-    
- }
-      
-   
-
-
-
-
+}
