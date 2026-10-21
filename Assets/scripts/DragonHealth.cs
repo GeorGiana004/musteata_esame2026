@@ -84,17 +84,21 @@ public class DragonHealth : MonoBehaviour
         Invoke("MostraInserimentoNome", 2f);
     }
 
-    void MostraInserimentoNome()
+  void MostraInserimentoNome()
     {
-        // Step 3: Ora ACCENDO il pannello del Post Score!
+        // 1. Nascondo la scritta WIN
+        if (WinScreen != null)
+        {
+            WinScreen.SetActive(false);
+        }
+
+        // 2. Accendo il pannello del Post Score
         if (inputScorePanel != null)
         {
             inputScorePanel.SetActive(true);
         }
 
-        Debug.Log("Pannello Post Score attivato!");
-
-        // Blocco il gioco per far scrivere il nome in tranquillità
+        // 3. Blocco il gioco
         Time.timeScale = 0f; 
     }
 }

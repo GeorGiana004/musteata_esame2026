@@ -1,32 +1,56 @@
 using UnityEngine;
-using TMPro; // Serve per usare TextMeshPro
+using TMPro;
+using UnityEngine.Networking;
+using System.Collections;
 
 public class ScoreManager : MonoBehaviour
 {
-    
     public TMP_InputField nameInputField;
+    public GameObject postScorePanel;   
+    public GameObject leaderboardPanel; 
 
-    // Funzione da collegare al bottone "Submit Score"
+    // Il codice pubblico di Dreamlo preso dal tuo link
+    private string publicCode = "6ac61aed8f40bb15a8d2a8f1";
+
     public void SaveScoreAndShowLeaderboard()
     {
-        // 1. Prende il nome scritto dal giocatore (se è vuoto, usa "Player")
+        // 1. Prende il nome inserito o usa "Player" come fallback
         string playerName = "Player";
         if (nameInputField != null && !string.IsNullOrEmpty(nameInputField.text))
         {
             playerName = nameInputField.text;
         }
 
-        // 2. Prende il tempo che abbiamo salvato prima dal drago
+        // 2. Prende il tempo registrato dal drago
         float finalTime = PlayerPrefs.GetFloat("LastPlayerScore", 0f);
 
-        // 3. Salviamo il punteggio usando PlayerPrefs (metodo semplice per principianti)
-        // Salviamo il tempo e il nome associati
-        PlayerPrefs.SetString("SavedName", playerName);
-        PlayerPrefs.SetFloat("SavedTime", finalTime);
-        PlayerPrefs.Save();
+        // 3. Manda il punteggio online su Dreamlo
+        StartCoroutine(UploadScoreToDreamlo(playerName, finalTime));
 
-        Debug.Log("Punteggio salvato! Nome: " + playerName + " - Tempo: " + finalTime);
+        // 4. Spegne il pannello del nome e accende la classifica
+        if (postScorePanel != null) postScorePanel.SetActive(false);
+        if (leaderboardPanel != null) leaderboardPanel.SetActive(true);
+    }
 
-      
+    // Funzione che comunica con Dreamlo per registrare il punteggio
+    IEnumerator UploadScoreToDreamlo(string name, float score)
+    {
+        // Moltiplichiamo per 100 per mantenere i decimali del tempo
+        int scoreInt = Mathf.RoundToInt(score * 100f); 
+        string url = "https://dreamlo.com/lb/" + publicCode + "/add/" + UnityWebRequest.EscapeURL(name) + "/" + scoreInt;
+
+        using (UnityWebRequest www = UnityWebRequest.Get(url))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.result == UnityWebRequest.Result.Success)
+            {
+                Debug.Log("Punteggio inviato a Dreamlo con successo!");
+            }
+            else
+            {
+                Debug.Log("Errore nell'invio del punteggio: " + www.error);
+            }
+        }
     }
 }

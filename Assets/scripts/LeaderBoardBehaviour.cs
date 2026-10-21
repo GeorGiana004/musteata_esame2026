@@ -15,18 +15,21 @@ public class LeaderBoardBehaviour : MonoBehaviour
     public Transform EntryGroup;
 
     public TMP_InputField PlayerNameInputField;
+    
+    private string webUrl = "https://dreamlo.com/lb/6ac61aed8f40bb15a8d2a8f1/quote";
 
-    void Start()
+    void OnEnable()
     {
-        
+        // Appena si apre il pannello della classifica, scarica subito i dati online in automatico!
+        StartCoroutine(GetRequest(webUrl));
     }
 
     void Update()
     {
-        // Premendo la barra spaziatrice scarica la classifica
+        // Lasciamo anche la barra spaziatrice per ricaricare manualmente se serve
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            StartCoroutine(GetRequest("https://dreamlo.com/lb/6ac61aed8f40bb15a8d2a8f1/quote"));
+            StartCoroutine(GetRequest(webUrl));
         }
     }
 
@@ -34,46 +37,28 @@ public class LeaderBoardBehaviour : MonoBehaviour
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            // Richiesta web e attesa della risposta
             yield return webRequest.SendWebRequest();
 
-            string[] pages = uri.Split('/');
-            int page = pages.Length - 1;
-
-            // Controllo errori
-            switch (webRequest.result)
+            if (webRequest.result != UnityWebRequest.Result.Success)
             {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                    Debug.LogError(pages[page] + ": Error: " + webRequest.error);
-                    yield break;
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
-                    yield break;
-                case UnityWebRequest.Result.Success:
-                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    break;
+                Debug.LogError("Errore nel download della classifica: " + webRequest.error);
+                yield break;
             }
 
             string pageContent = webRequest.downloadHandler.text;
 
-            // Dividiamo i dati riga per riga
             PlayersData = pageContent.Split('\n');
-
-            // Svuotiamo le liste prima di riempirle
             PlayersName.Clear();
             PlayerScore.Clear();
 
             for (int i = 0; i < PlayersData.Length; i++)
             {
-                // Ignoriamo le righe vuote
                 if (!string.IsNullOrEmpty(PlayersData[i]))
                 {
                     string[] lineElements = PlayersData[i].Split(',');
                     
                     if (lineElements.Length >= 2)
                     {
-                        // lineElements[0] è il nome, lineElements[1] è il punteggio
                         string playerName = lineElements[0];
                         string score = lineElements[1];
 
@@ -83,24 +68,20 @@ public class LeaderBoardBehaviour : MonoBehaviour
                 }
             }
 
-            // Aggiorniamo la UI dopo aver elaborato i dati
             RefreshUI();
         }
     }
 
     void RefreshUI()
     {
-        // 1. Rimuoviamo i vecchi elementi per evitare duplicati se premi Spazio più volte
         foreach (Transform child in EntryGroup)
         {
             Destroy(child.gameObject);
         }
 
-        // 2. Creiamo le nuove righe in base ai dati salvati nelle liste
         for (int i = 0; i < PlayersName.Count; i++)
         {
             LeaderBoardentryBehavior currentEntry = Instantiate(EntryPrefab, EntryGroup);
-            // La classifica parte da 1, quindi (i + 1)
             currentEntry.SetEntryValues((i + 1).ToString(), PlayersName[i], PlayerScore[i]);
         }
     }
